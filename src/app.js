@@ -13,6 +13,6 @@ mongoose.connect(config.mongoUrl, {
 
 app.use(cors());
 app.use(express.json());
-app.use(announcementRouter);
+app.use('/api/announcements', announcementRouter);
 
 module.exports = app;
