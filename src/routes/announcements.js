@@ -3,7 +3,6 @@ const router = express.Router();
 const Announcement = require('../models/announcements');
 
 // TODO: Authorization
-
 router.get('/', async (_request, response) => {
   const announcements = await Announcement.find({});
   response.json(announcements.map((announcement) => announcement.toJSON()));
