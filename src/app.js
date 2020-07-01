@@ -11,12 +11,13 @@ mongoose.connect(config.mongoUrl, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: true,
+  useCreateIndex: true,
 });
 
 app.use(cors());
 app.use(express.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api/announcements', announcementRouter);
-app.use('/auth', authRouter)
+app.use('/auth', authRouter);
 
 module.exports = app;
