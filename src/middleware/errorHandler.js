@@ -6,7 +6,7 @@ const errorHandler = (error, request, response, next) => {
       error: 'invalid token',
     });
   } else if (error.name === 'ValidationError') {
-    return response.status(401).json({ error: error.message });
+    return response.status(401).json({ error: 'There was a validation error' });
   }
 
   next(error);

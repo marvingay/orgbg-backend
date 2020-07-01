@@ -6,7 +6,7 @@ const announcementSchema = new Schema({
   title: String,
   content: String,
   author: String,
-  date: String,
+  date: Date,
   category: String,
   hidden: Boolean,
 });

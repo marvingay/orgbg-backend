@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Announcement = require('../models/announcements');
+const Announcement = require('../models/announcement');
 
 // TODO: Authorization
 router.get('/', async (_request, response) => {
@@ -11,7 +11,7 @@ router.get('/', async (_request, response) => {
 router.post('/', async (request, response) => {
   const announcement = new Announcement({
     ...request.body,
-    date: new Date().toLocaleString('en-US'),
+    date: new Date(),
   });
 
   const savedAnnouncement = await announcement.save();
