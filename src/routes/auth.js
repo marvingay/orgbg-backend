@@ -3,8 +3,11 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const config = require('../utils/config');
+const authHelper = require('../utils/authHelper');
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(config.CLIENT_ID);
+
+// TODO: Handle JWT on frontend
 
 // Google OAuth token verification helper
 const verify = async (token) => {
@@ -35,16 +38,47 @@ router.post('/', async (request, response) => {
     response.status(200).send({ webToken, displayName: user.displayName });
   } else {
     // if user does not exist, create user
+
     const user = new User({
-      AuthID: userID,
-      displayName: `New${new Date().toLocaleString}`,
+      authID: userID,
+      displayName: `ORGBG${Math.floor(Math.random() * 10000000)}`,
       role: 'member',
     });
 
     await user.save();
 
-    response.status(201);
+    const userForToken = { displayName: user.displayName, id: user._id };
+
+    const webToken = jwt.sign(userForToken, config.SECRET);
+
+    response.status(201).send({ webToken });
   }
+});
+
+// Update User Information Route
+router.put('/', async (request, response) => {
+  const body = request.body;
+
+  const token = authHelper.getTokenFrom(request);
+  const decodedToken = jwt.verify(token, config.SECRET);
+  if (!token || !decodedToken.id) {
+    // check if Token exists or if it contains an ID
+    return response.status(401).json({ error: 'token missing or invalid' });
+  }
+  if (!body.displayName.startsWith('ORGBG')) {
+    // only new accounts can use this route
+    return response.status(401).json({ error: 'Request Denied' });
+  }
+
+  const userToUpdate = await User.findById(decodedToken.id);
+  const user = await User.findByIdAndUpdate(decodedToken.id, {
+    ...userToUpdate,
+    ...body,
+  });
+
+  await user.save();
+
+  return response.json(user.toJSON());
 });
 
 module.exports = router;
