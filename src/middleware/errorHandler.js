@@ -7,6 +7,10 @@ const errorHandler = (error, request, response, next) => {
     });
   } else if (error.name === 'ValidationError') {
     return response.status(401).json({ error: 'There was a validation error' });
+  } else if (error.name === 'UnauthorizedError') {
+    return response
+      .status(403)
+      .json({ success: false, message: 'No token provided.' });
   }
 
   next(error);

@@ -25,15 +25,18 @@ router.post('/', async (request, response) => {
   const token = request.body.idToken;
   const userID = await verify(token);
   console.log(userID);
-  const userAccount = await User.findOne({ AuthID: userID });
+  const userAccount = await User.findOne({ authID: userID });
+  console.log(userAccount);
   if (userAccount) {
     // check if user exists -> sign token
     const user = {
-      displayName: user.displayName,
-      id: user._id,
+      authID: userAccount.authID,
+      displayName: userAccount.displayName,
+      id: userAccount._id,
     };
 
     const webToken = jwt.sign(user, config.SECRET);
+    response.cookie('webToken', webToken, { httpOnly: true });
 
     response.status(200).send({ webToken, displayName: user.displayName });
   } else {
@@ -47,10 +50,15 @@ router.post('/', async (request, response) => {
 
     await user.save();
 
-    const userForToken = { displayName: user.displayName, id: user._id };
+    const userForToken = {
+      authID: userID,
+      displayName: user.displayName,
+      id: user._id,
+    };
 
     const webToken = jwt.sign(userForToken, config.SECRET);
 
+    response.cookie('webToken', webToken, { httpOnly: true });
     response.status(201).send({ webToken });
   }
 });
@@ -79,6 +87,11 @@ router.put('/', async (request, response) => {
   await user.save();
 
   return response.json(user.toJSON());
+});
+
+// GET: Check Auth route
+router.get('/', (request, response) => {
+  response.status(200).json({ success: true });
 });
 
 module.exports = router;
