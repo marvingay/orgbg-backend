@@ -7,8 +7,6 @@ const authHelper = require('../utils/authHelper');
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(config.CLIENT_ID);
 
-// TODO: Handle JWT on frontend
-
 // Google OAuth token verification helper
 const verify = async (token) => {
   const ticket = await client.verifyIdToken({
@@ -59,7 +57,7 @@ router.post('/', async (request, response) => {
     const webToken = jwt.sign(userForToken, config.SECRET);
 
     response.cookie('webToken', webToken, { httpOnly: true });
-    response.status(201).send({ webToken });
+    response.status(201).send({ webToken, displayName: user.displayName });
   }
 });
 
@@ -67,31 +65,31 @@ router.post('/', async (request, response) => {
 router.put('/', async (request, response) => {
   const body = request.body;
 
-  const token = authHelper.getTokenFrom(request);
-  const decodedToken = jwt.verify(token, config.SECRET);
-  if (!token || !decodedToken.id) {
-    // check if Token exists or if it contains an ID
-    return response.status(401).json({ error: 'token missing or invalid' });
-  }
-  if (!body.displayName.startsWith('ORGBG')) {
+  console.log(body);
+  if (!body.currentName.startsWith('ORGBG')) {
     // only new accounts can use this route
     return response.status(401).json({ error: 'Request Denied' });
   }
 
-  const userToUpdate = await User.findById(decodedToken.id);
-  const user = await User.findByIdAndUpdate(decodedToken.id, {
-    ...userToUpdate,
-    ...body,
-  });
+  const updateUser = await User.findOne({ displayName: body.currentName });
+  console.log(updateUser);
+  updateUser.displayName = body.updatedName;
 
-  await user.save();
+  await updateUser.save();
 
-  return response.json(user.toJSON());
+  return response.json(updateUser.toJSON());
 });
 
 // GET: Check Auth route
 router.get('/', (request, response) => {
   response.status(200).json({ success: true });
+});
+
+// POST: Logout route
+router.post('/logout', (request, response) => {
+  if (request.body.action === 'v')
+    return response.status(200).json({ message: 'success' });
+  else return response.status(400);
 });
 
 module.exports = router;

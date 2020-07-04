@@ -13,7 +13,7 @@ mongoose
   .connect(config.mongoUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useFindAndModify: true,
+    useFindAndModify: false,
     useCreateIndex: true,
   })
   .then(() => console.log('MongoDB Connected.'));
@@ -26,9 +26,9 @@ app.use(
   expressJWT({
     secret: config.SECRET,
     getToken: (request) => request.cookies.webToken,
-    algorithms: ['RS256'],
+    algorithms: ['RSA256'],
   }).unless({
-    path: { url: '/auth', method: 'post' },
+    path: { url: '/auth' },
   })
 );
 app.use('/api/announcements', announcementRouter);
