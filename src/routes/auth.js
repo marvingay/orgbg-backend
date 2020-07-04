@@ -24,7 +24,6 @@ router.post('/', async (request, response) => {
   const userID = await verify(token);
   console.log(userID);
   const userAccount = await User.findOne({ authID: userID });
-  console.log(userAccount);
   if (userAccount) {
     // check if user exists -> sign token
     const user = {
@@ -72,7 +71,6 @@ router.put('/', async (request, response) => {
   }
 
   const updateUser = await User.findOne({ displayName: body.currentName });
-  console.log(updateUser);
   updateUser.displayName = body.updatedName;
 
   await updateUser.save();
@@ -80,16 +78,15 @@ router.put('/', async (request, response) => {
   return response.json(updateUser.toJSON());
 });
 
-// GET: Check Auth route
+// ! DUNUSED - GET: Check Auth route
 router.get('/', (request, response) => {
   response.status(200).json({ success: true });
 });
 
-// POST: Logout route
-router.post('/logout', (request, response) => {
-  if (request.body.action === 'v')
-    return response.status(200).json({ message: 'success' });
-  else return response.status(400);
+// GET: Logout route
+router.get('/logout', (request, response) => {
+  response.clearCookie('webToken', { domain: 'localhost', path: '/' });
+  response.status(200).send({ message: 'Successfully logged out.' });
 });
 
 module.exports = router;
