@@ -1,6 +1,6 @@
 const http = require('http');
 const config = require('./utils/config');
-const app = require('./app');
+const app = require('./app').app;
 
 const server = require('./app');
 
@@ -10,5 +10,5 @@ app.listen(config.PORT, () => {
 
 module.exports = {
   app,
-  server
-}
+  server,
+};
