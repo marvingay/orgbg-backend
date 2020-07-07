@@ -4,7 +4,9 @@ const Announcement = require('../models/announcement');
 
 router.get('/', async (_request, response) => {
   const announcements = await Announcement.find({});
-  response.json(announcements.map((announcement) => announcement.toJSON()));
+  return response.send(
+    announcements.map((announcement) => announcement.toJSON())
+  );
 });
 
 router.post('/', async (request, response) => {
@@ -16,7 +18,7 @@ router.post('/', async (request, response) => {
   const savedAnnouncement = await announcement.save();
   response.status(201).json(savedAnnouncement.toJSON());
 });
-
+// ! Don't use this yet
 router.put('/:id', async (request, response) => {
   const originalAnnouncement = router.get('/:id');
   const announcement = {

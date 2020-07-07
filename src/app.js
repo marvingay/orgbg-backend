@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
-const AutoIncrement = require('mongoose-sequence')(mongoose);
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const expressJWT = require('express-jwt');
@@ -29,10 +28,10 @@ app.use(
     getToken: (request) => request.cookies.webToken,
     algorithms: ['HS256'],
   }).unless({
-    path: ['/auth'],
+    path: ['/auth', '/api/announcements'],
   })
 );
 app.use('/api/announcements', announcementRouter);
 app.use('/auth', authRouter);
 
-module.exports = { app, AutoIncrement };
+module.exports = app;
