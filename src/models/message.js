@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
+const AutoIncrement = require('../app').AutoIncrement;
 
 const messageSchema = new Schema({
   subject: String,
