@@ -8,7 +8,7 @@ const announcementSchema = new Schema(
     title: String,
     content: String,
     author: String,
-    date: Date,
+    date: String,
     category: String,
     hidden: Boolean,
   },

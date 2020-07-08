@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const Announcement = require('../models/announcement');
+const format = require('date-fns/format');
 
 router.get('/', async (_request, response) => {
   const announcements = await Announcement.find({});
-  return response.send(
+  return response.json(
     announcements.map((announcement) => announcement.toJSON())
   );
 });
@@ -12,7 +13,7 @@ router.get('/', async (_request, response) => {
 router.post('/', async (request, response) => {
   const announcement = new Announcement({
     ...request.body,
-    date: new Date(),
+    date: format(new Date(), 'MM/dd/yy h:mm a O'),
   });
 
   const savedAnnouncement = await announcement.save();
