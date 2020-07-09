@@ -5,12 +5,12 @@ const User = require('../models/user');
 
 // TODO: GET User Notifcations
 
-router.post('/', async (request, response) => {
-  const { body } = request;
-  // If User request, check action
+router.post('/', async (req, res) => {
+  const { body } = req;
+  // If User req, check action
   if (body.action === 'GET') {
     const notifications = await Notification.find({ user: body.user });
-    return response.status(200).json({ notifications });
+    return res.status(200).json({ notifications });
   }
   // TODO: POST Notification from 'admin' role.
   if (body.action === 'POST') {
@@ -19,7 +19,7 @@ router.post('/', async (request, response) => {
     });
 
     const savedNotification = await notification.save();
-    return response.status(201).json({ savedNotification });
+    return res.status(201).json({ savedNotification });
   }
 });
 

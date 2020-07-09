@@ -18,8 +18,8 @@ const verify = async (token) => {
 };
 
 // Sign-In route
-router.post('/', async (request, response) => {
-  const token = request.body.idToken;
+router.post('/', async (req, res) => {
+  const token = req.body.idToken;
   const userID = await verify(token);
   console.log(userID);
   const userAccount = await User.findOne({ authID: userID });
@@ -32,9 +32,9 @@ router.post('/', async (request, response) => {
     };
 
     const webToken = jwt.sign(user, config.SECRET);
-    response.cookie('webToken', webToken, { httpOnly: true });
+    res.cookie('webToken', webToken, { httpOnly: true });
 
-    response.status(200).send({ webToken, displayName: user.displayName });
+    res.status(200).send({ webToken, displayName: user.displayName });
   } else {
     // if user does not exist, create user
 
@@ -54,19 +54,19 @@ router.post('/', async (request, response) => {
 
     const webToken = jwt.sign(userForToken, config.SECRET);
 
-    response.cookie('webToken', webToken, { httpOnly: true });
-    response.status(201).send({ webToken, displayName: user.displayName });
+    res.cookie('webToken', webToken, { httpOnly: true });
+    res.status(201).send({ webToken, displayName: user.displayName });
   }
 });
 
 // Update User Information Route
-router.put('/', async (request, response) => {
-  const body = request.body;
+router.put('/', async (req, res) => {
+  const body = req.body;
 
   console.log(body);
   if (!body.currentName.startsWith('ORGBG')) {
     // only new accounts can use this route
-    return response.status(401).json({ error: 'Request Denied' });
+    return res.status(401).json({ error: 'Request Denied' });
   }
 
   const updateUser = await User.findOne({ displayName: body.currentName });
@@ -74,18 +74,18 @@ router.put('/', async (request, response) => {
 
   await updateUser.save();
 
-  return response.json(updateUser.toJSON());
+  return res.json(updateUser.toJSON());
 });
 
 // ! DUNUSED - GET: Check Auth route
-router.get('/', (request, response) => {
-  response.status(200).json({ success: true });
+router.get('/', (req, res) => {
+  res.status(200).json({ success: true });
 });
 
 // GET: Logout route
-router.get('/logout', (request, response) => {
-  response.clearCookie('webToken', { domain: 'localhost', path: '/' });
-  response.status(200).send({ message: 'Successfully logged out.' });
+router.get('/logout', (req, res) => {
+  res.clearCookie('webToken', { domain: 'localhost', path: '/' });
+  res.status(200).send({ message: 'Successfully logged out.' });
 });
 
 module.exports = router;

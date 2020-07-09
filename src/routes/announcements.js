@@ -3,40 +3,38 @@ const router = express.Router();
 const Announcement = require('../models/announcement');
 const format = require('date-fns/format');
 
-router.get('/', async (_request, response) => {
+router.get('/', async (_req, res) => {
   const announcements = await Announcement.find({});
-  return response.json(
-    announcements.map((announcement) => announcement.toJSON())
-  );
+  return res.json(announcements.map((announcement) => announcement.toJSON()));
 });
 
-router.post('/', async (request, response) => {
+router.post('/', async (req, res) => {
   const announcement = new Announcement({
-    ...request.body,
+    ...req.body,
     date: format(new Date(), 'MM/dd/yy h:mm a O'),
   });
 
   const savedAnnouncement = await announcement.save();
-  response.status(201).json(savedAnnouncement.toJSON());
+  res.status(201).json(savedAnnouncement.toJSON());
 });
 // ! Don't use this yet
-router.put('/:id', async (request, response) => {
+router.put('/:id', async (req, res) => {
   const originalAnnouncement = router.get('/:id');
   const announcement = {
     ...originalAnnouncement,
-    ...request.body,
+    ...req.body,
   };
   const updatedAnnouncement = await Announcement.findByIdAndUpdate(
-    request.params.id,
+    req.params.id,
     announcement
   );
 
-  response.json(updatedAnnouncement.toJSON());
+  res.json(updatedAnnouncement.toJSON());
 });
 
-router.delete('/:id', async (request, response) => {
-  await Announcement.findByIdAndRemove(request.params.id);
-  response.status(204).end();
+router.delete('/:id', async (req, res) => {
+  await Announcement.findByIdAndRemove(req.params.id);
+  res.status(204).end();
 });
 
 module.exports = router;
