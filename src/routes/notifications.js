@@ -9,8 +9,9 @@ router.post('/', async (req, res) => {
   const { body } = req;
   // If User req, check action
   if (body.action === 'GET') {
-    const notifications = await Notification.find({ user: body.user });
-    return res.status(200).json({ notifications });
+    const user = await User.find({ displayName: body.user });
+    const notifications = await Notification.find({ user: user._id });
+    return res.status(200).json(notifications.toJSON());
   }
   // TODO: POST Notification from 'admin' role.
   if (body.action === 'POST') {
@@ -19,7 +20,7 @@ router.post('/', async (req, res) => {
     });
 
     const savedNotification = await notification.save();
-    return res.status(201).json({ savedNotification });
+    return res.status(201).json(savedNotification.toJSON());
   }
 });
 

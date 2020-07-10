@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const expressJWT = require('express-jwt');
 const config = require('./utils/config');
 const announcementRouter = require('./routes/announcements');
+const notificationRouter = require('./routes/notifications');
 const authRouter = require('./routes/auth');
 
 mongoose
@@ -28,10 +29,11 @@ app.use(
     getToken: (request) => request.cookies.webToken,
     algorithms: ['HS256'],
   }).unless({
-    path: ['/auth', '/api/announcements'],
+    path: ['/auth', '/api/announcements', '/api/notifications'],
   })
 );
 app.use('/api/announcements', announcementRouter);
+app.use('/api/notifications', notificationRouter);
 app.use('/auth', authRouter);
 
 module.exports = app;
