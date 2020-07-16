@@ -7,11 +7,14 @@ const User = require('../models/user');
 
 router.post('/', async (req, res) => {
   const { body } = req;
+  console.log(body);
   // If User req, check action
   if (body.action === 'GET') {
-    const user = await User.find({ displayName: body.user });
+    const user = await User.findOne({ displayName: body.user });
+    console.log(user);
     const notifications = await Notification.find({ user: user._id });
-    return res.status(200).json(notifications.toJSON());
+    console.log(notifications);
+    return res.json(notifications.map((notification) => notification.toJSON()));
   }
   // TODO: POST Notification from 'admin' role.
   if (body.action === 'POST') {

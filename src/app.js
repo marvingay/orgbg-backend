@@ -8,6 +8,7 @@ const expressJWT = require('express-jwt');
 const config = require('./utils/config');
 const announcementRouter = require('./routes/announcements');
 const notificationRouter = require('./routes/notifications');
+const messageRouter = require('./routes/messages');
 const authRouter = require('./routes/auth');
 
 mongoose
@@ -33,6 +34,7 @@ app.use(
   })
 );
 app.use('/api/announcements', announcementRouter);
+app.use('/api/messages', messageRouter);
 app.use('/api/notifications', notificationRouter);
 app.use('/auth', authRouter);
 
