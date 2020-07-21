@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const Announcement = require('../models/announcement');
-const format = require('date-fns/format');
 
 router.get('/', async (_req, res) => {
   const announcements = await Announcement.find({});
@@ -11,7 +10,7 @@ router.get('/', async (_req, res) => {
 router.post('/', async (req, res) => {
   const announcement = new Announcement({
     ...req.body,
-    date: format(new Date(), 'MM/dd/yy h:mm a O'),
+    date: new Date(),
   });
 
   const savedAnnouncement = await announcement.save();

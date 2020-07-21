@@ -2,8 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Message = require('../models/message');
 const User = require('../models/user');
-// TODO: refactor date formatting to own utility
-const format = require('date-fns/format');
 
 // TODO: GET USER MESSAGES via POST
 router.post('/all', async (req, res) => {
@@ -39,7 +37,7 @@ router.post('/', async (req, res) => {
   const message = new Message({
     body: body.message,
     seen: false,
-    date: format(new Date(), 'MM/dd/yy h:mm a O'),
+    date: new Date(),
     sender: sender._id,
     recipient: recipient._id,
   });
