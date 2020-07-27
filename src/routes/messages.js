@@ -28,9 +28,7 @@ router.post('/all', async (req, res) => {
 router.post('/', async (req, res) => {
   const body = req.body;
   const sender = await User.findOne({ displayName: body.sender });
-  console.log(sender);
   const recipient = await User.findOne({ displayName: body.recipient });
-  console.log(recipient);
   if (!sender || !recipient)
     return res.status(400).json({ error: 'invalid user' });
 

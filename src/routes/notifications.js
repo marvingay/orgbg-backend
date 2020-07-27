@@ -8,10 +8,17 @@ const User = require('../models/user');
 router.post('/', async (req, res) => {
   const { body } = req;
   console.log(body);
+  // read notifs, set notifs to seen
+  if (body.action === 'READ') {
+    const user = await User.findOne({ displayName: body.user });
+    console.log(user);
+    await Notification.updateMany({ user: user._id }, { read: true });
+    console.log('This worked');
+    return res.status(204).json({ message: 'Success' });
+  }
   // If User req, check action
   if (body.action === 'GET') {
     const user = await User.findOne({ displayName: body.user });
-    console.log(user);
     const notifications = await Notification.find({ user: user._id });
     console.log(notifications);
     return res.json(notifications.map((notification) => notification.toJSON()));
