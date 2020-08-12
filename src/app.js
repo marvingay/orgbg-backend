@@ -38,6 +38,6 @@ app.use('/api/announcements', announcementRouter);
 app.use('/api/messages', messageRouter);
 app.use('/api/notifications', notificationRouter);
 app.use('/auth', authRouter);
-app.use('/api/users');
+app.use('/api/users', userRouter);
 
 module.exports = app;
