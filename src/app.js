@@ -10,6 +10,7 @@ const announcementRouter = require('./routes/announcements');
 const notificationRouter = require('./routes/notifications');
 const messageRouter = require('./routes/messages');
 const authRouter = require('./routes/auth');
+const userRouter = require('./routes/users');
 
 mongoose
   .connect(config.mongoUrl, {
@@ -37,5 +38,6 @@ app.use('/api/announcements', announcementRouter);
 app.use('/api/messages', messageRouter);
 app.use('/api/notifications', notificationRouter);
 app.use('/auth', authRouter);
+app.use('/api/users');
 
 module.exports = app;
