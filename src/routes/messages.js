@@ -38,7 +38,7 @@ router.post('/', async (req, res) => {
   });
 
   const savedMessage = await message.save();
-  res.status(201).json(savedMessage.toJSON());
+  return res.status(201).json(savedMessage.toJSON());
 });
 
 module.exports = router;

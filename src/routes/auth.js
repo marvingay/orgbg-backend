@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const Message = require('../models/message');
+const Notification = require('../models/notification');
 const config = require('../utils/config');
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(config.CLIENT_ID);
@@ -54,8 +56,29 @@ router.post('/', async (req, res) => {
 
     const webToken = jwt.sign(userForToken, config.SECRET);
 
+    const message = new Message({
+      body: 'Welcome to ORG Battleground!',
+      seen: false,
+      date: new Date(),
+      sender: '5f343667aa7ef43fc873d315',
+      recipient: user._id,
+    });
+
+    const notification = new Notification({
+      type: 'message',
+      message: 'Welcome to ORG Battleground!',
+      read: false,
+      user: user._id,
+    });
+
+    await message.save();
+    await notification.save();
+
     res.cookie('webToken', webToken, { httpOnly: true });
-    res.status(201).send({ webToken, displayName: user.displayName });
+    return res
+      .status(201)
+      .redirect('/')
+      .send({ webToken, displayName: user.displayName });
   }
 });
 
