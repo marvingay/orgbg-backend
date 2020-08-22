@@ -11,6 +11,8 @@ const errorHandler = (error, request, response, next) => {
     return response
       .status(403)
       .json({ success: false, message: 'No token provided.' });
+  } else if (error.name === 'TypeError') {
+    console.log('Yahtzee!');
   }
 
   next(error);

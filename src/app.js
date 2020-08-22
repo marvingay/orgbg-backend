@@ -5,7 +5,9 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const expressJWT = require('express-jwt');
+require('express-async-errors');
 const config = require('./utils/config');
+const errorHandler = require('./middleware/errorHandler');
 const announcementRouter = require('./routes/announcements');
 const notificationRouter = require('./routes/notifications');
 const messageRouter = require('./routes/messages');
@@ -39,5 +41,6 @@ app.use('/api/messages', messageRouter);
 app.use('/api/notifications', notificationRouter);
 app.use('/auth', authRouter);
 app.use('/api/users', userRouter);
+app.use(errorHandler);
 
 module.exports = app;
