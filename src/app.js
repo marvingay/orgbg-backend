@@ -39,7 +39,7 @@ app.use(
 app.use('/api/announcements', announcementRouter);
 app.use('/api/messages', messageRouter);
 app.use('/api/notifications', notificationRouter);
-app.use('/auth', authRouter);
+app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 app.use(errorHandler);
 
