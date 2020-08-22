@@ -63,7 +63,6 @@ router.post('/', async (req, res) => {
 router.put('/', async (req, res) => {
   const body = req.body;
 
-  console.log(body);
   if (!body.currentName.startsWith('ORGBG')) {
     // only new accounts can use this route
     return res.status(401).json({ error: 'Request Denied' });
