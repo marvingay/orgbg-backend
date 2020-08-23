@@ -33,7 +33,12 @@ app.use(
     getToken: (request) => request.cookies.webToken,
     algorithms: ['HS256'],
   }).unless({
-    path: ['/api/auth', '/api/announcements', '/api/notifications'],
+    path: [
+      '/api/auth',
+      '/api/auth/logout',
+      '/api/announcements',
+      '/api/notifications',
+    ],
   })
 );
 app.use('/api/announcements', announcementRouter);
