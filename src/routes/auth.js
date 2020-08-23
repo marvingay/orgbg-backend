@@ -107,7 +107,7 @@ router.get('/', (req, res) => {
 // GET: Logout route
 router.get('/logout', (req, res) => {
   res.clearCookie('webToken', { domain: 'localhost', path: '/' });
-  res.status(200).send({ message: 'Successfully logged out.' });
+  return res.status(200).send({ message: 'Successfully logged out.' });
 });
 
 module.exports = router;
