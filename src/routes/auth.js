@@ -75,10 +75,7 @@ router.post('/', async (req, res) => {
     await notification.save();
 
     res.cookie('webToken', webToken, { httpOnly: true });
-    return res
-      .status(201)
-      .redirect('/')
-      .send({ webToken, displayName: user.displayName });
+    return res.status(201).send({ webToken, displayName: user.displayName });
   }
 });
 
@@ -100,9 +97,9 @@ router.put('/', async (req, res) => {
 });
 
 // ! DUNUSED - GET: Check Auth route
-router.get('/', (req, res) => {
-  res.status(200).json({ success: true });
-});
+// router.get('/', (req, res) => {
+//   res.status(200).json({ success: true });
+// });
 
 // GET: Logout route
 router.get('/logout', (req, res) => {
