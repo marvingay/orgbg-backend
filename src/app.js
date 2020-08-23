@@ -36,6 +36,7 @@ app.use(
     path: [
       '/api/auth',
       '/api/auth/logout',
+      '/api/messages/all',
       '/api/announcements',
       '/api/notifications',
     ],
