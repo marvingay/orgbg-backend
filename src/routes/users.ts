@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const User = require('../models/user');
+import User from '../models/user';
 
 router.delete('/:displayName', async (req, res) => {
   await User.findOneAndDelete({ displayName: req.params.displayName });
@@ -9,4 +9,4 @@ router.delete('/:displayName', async (req, res) => {
   return res.status(204).json({ msg: 'Account Deleted' }).redirect('/');
 });
 
-module.exports = router;
+export default router;

@@ -1,6 +1,8 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
 const AutoIncrement = require('mongoose-sequence')(mongoose);
+import { IAnnouncement } from './interfaces';
+
 
 const announcementSchema = new Schema(
   {
@@ -18,13 +20,11 @@ const announcementSchema = new Schema(
 announcementSchema.plugin(AutoIncrement);
 
 announcementSchema.set('toJSON', {
-  transform: (_document, returnedObject) => {
-    returnedObject.id = returnedObject._id;
+  transform: (_document, returnedObject: IAnnouncement) => {
+    returnedObject.id = returnedObject._id as number;
     delete returnedObject._id;
     delete returnedObject.__v;
   },
 });
 
-const Announcement = model('Announcement', announcementSchema);
-
-module.exports = Announcement;
+export default model<IAnnouncement>('Announcement', announcementSchema);

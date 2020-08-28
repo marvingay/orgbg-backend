@@ -1,5 +1,6 @@
-const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
+import mongoose from 'mongoose';
+import uniqueValidator from 'mongoose-unique-validator';
+import { IUser } from './interfaces';
 
 const { Schema, model } = mongoose;
 
@@ -16,8 +17,8 @@ const userSchema = new Schema({
 });
 
 userSchema.set('toJSON', {
-  transform: (_document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString();
+  transform: (_document, returnedObject: IUser) => {
+    returnedObject.id = returnedObject._id as string;
     delete returnedObject._id;
     delete returnedObject.__v;
   },
@@ -25,6 +26,5 @@ userSchema.set('toJSON', {
 
 userSchema.plugin(uniqueValidator);
 
-const User = model('User', userSchema);
+export default model<IUser>('User', userSchema);
 
-module.exports = User;

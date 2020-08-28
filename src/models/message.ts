@@ -1,6 +1,8 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
 const AutoIncrement = require('mongoose-sequence')(mongoose);
+import { IMessage } from './interfaces';
+
 
 const messageSchema = new Schema(
   {
@@ -20,17 +22,15 @@ const messageSchema = new Schema(
   { _id: false }
 );
 
+AutoIncrement(messageSchema);
 messageSchema.plugin(AutoIncrement, { id: 'messages' });
 
 messageSchema.set('toJSON', {
-  transform: (_document, returnedObject) => {
-    returnedObject.id = returnedObject._id;
+  transform: (_document, returnedObject: IMessage) => {
+    returnedObject.id = returnedObject._id as number;
     delete returnedObject._id;
     delete returnedObject.__v;
-    delete returnedObject.user;
   },
 });
 
-const Message = model('Message', messageSchema);
-
-module.exports = Message;
+export default model<IMessage>('Message', messageSchema);

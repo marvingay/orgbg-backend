@@ -1,6 +1,7 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
 const AutoIncrement = require('mongoose-sequence')(mongoose);
+import { INotification } from './interfaces';
 
 const notificationSchema = new Schema(
   {
@@ -16,17 +17,16 @@ const notificationSchema = new Schema(
   { _id: false }
 );
 
+AutoIncrement(notificationSchema);
 notificationSchema.plugin(AutoIncrement, { id: 'notifications' });
 
 notificationSchema.set('toJSON', {
-  transform: (_document, returnedObject) => {
-    returnedObject.id = returnedObject._id;
+  transform: (_document, returnedObject: INotification) => {
+    returnedObject.id = returnedObject._id as number;
     delete returnedObject._id;
     delete returnedObject.__v;
     delete returnedObject.user;
   },
 });
 
-const Notification = model('Notification', notificationSchema);
-
-module.exports = Notification;
+export default model<INotification>('Notification', notificationSchema);

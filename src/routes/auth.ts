@@ -1,21 +1,21 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const User = require('../models/user');
-const Message = require('../models/message');
-const Notification = require('../models/notification');
-const config = require('../utils/config');
-const { OAuth2Client } = require('google-auth-library');
-const client = new OAuth2Client(config.CLIENT_ID);
+import jwt from 'jsonwebtoken';
+import { CLIENT_ID, SECRET } from '../utils/config';
+import User from '../models/user';
+import Message from '../models/message';
+import Notification from '../models/notification';
+import { OAuth2Client } from 'google-auth-library';
+const client = new OAuth2Client(CLIENT_ID);
 
 // Google OAuth token verification helper
-const verify = async (token) => {
+const verify = async (token: string) => {
   const ticket = await client.verifyIdToken({
     idToken: token,
-    audience: config.CLIENT_ID,
+    audience: CLIENT_ID,
   });
   const payload = ticket.getPayload();
-  const userID = payload['sub'];
+  const userID = payload?.sub;
   return userID;
 };
 
@@ -23,7 +23,6 @@ const verify = async (token) => {
 router.post('/', async (req, res) => {
   const token = req.body.idToken;
   const userID = await verify(token);
-  console.log(userID);
   const userAccount = await User.findOne({ authID: userID });
   if (userAccount) {
     // check if user exists -> sign token
@@ -33,10 +32,10 @@ router.post('/', async (req, res) => {
       id: userAccount._id,
     };
 
-    const webToken = jwt.sign(user, config.SECRET);
+    const webToken = jwt.sign(user, SECRET);
     res.cookie('webToken', webToken, { httpOnly: true });
 
-    res.status(200).send({ webToken, displayName: user.displayName });
+    return res.status(200).send({ webToken, displayName: user.displayName });
   } else {
     // if user does not exist, create user
 
@@ -54,7 +53,7 @@ router.post('/', async (req, res) => {
       id: user._id,
     };
 
-    const webToken = jwt.sign(userForToken, config.SECRET);
+    const webToken = jwt.sign(userForToken, SECRET);
 
     const message = new Message({
       body: 'Welcome to ORG Battleground!',
@@ -89,11 +88,14 @@ router.put('/', async (req, res) => {
   }
 
   const updateUser = await User.findOne({ displayName: body.currentName });
-  updateUser.displayName = body.updatedName;
+  if (updateUser) {
+    updateUser.displayName = body.updatedName;
+    await updateUser.save();
+    return res.json(updateUser.toJSON());
+  }
 
-  await updateUser.save();
+  return res.status(401).json({ error: 'Request Denied' });
 
-  return res.json(updateUser.toJSON());
 });
 
 // ! DUNUSED - GET: Check Auth route
@@ -102,9 +104,9 @@ router.put('/', async (req, res) => {
 // });
 
 // GET: Logout route
-router.get('/logout', (req, res) => {
+router.get('/logout', (_req, res) => {
   res.clearCookie('webToken', { domain: 'localhost', path: '/' });
   return res.status(200).send({ message: 'Successfully logged out.' });
 });
 
-module.exports = router;
+export default router;

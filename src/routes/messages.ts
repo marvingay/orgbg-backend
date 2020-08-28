@@ -1,28 +1,31 @@
-const express = require('express');
+import express, { Request } from 'express';
 const router = express.Router();
-const Message = require('../models/message');
-const User = require('../models/user');
+import Message from '../models/message';
+import User from '../models/user';
 
-router.post('/all', async (req, res) => {
+interface MessageReq {
+  name: string;
+  sender: string;
+  recipient: string;
+  message: string;
+}
+
+interface CustomRequest<T> extends Request {
+  body: T;
+}
+
+router.post('/all', async (req: CustomRequest<MessageReq>, res) => {
   const body = req.body;
   const user = await User.findOne({ displayName: body.name });
   // Find All Messages via if User is sender or recipient
-  const userMessages = await Message.find({
-    $or: [{ sender: user._id }, { recipient: user._id }],
-  }).populate({
-    path: 'sender recipient',
-    populate: {
-      path: 'sender',
-      select: { displayName: 1 },
-    },
-    populate: 'recipient',
-    select: { displayName: 1 },
-  });
+  const userMessages = await Message.find({ $or: [{ sender: user?._id }, { recipient: user?._id }] })
+    .populate({ path: 'sender', select: 'displayName' })
+    .populate({ path: 'recipient', select: 'displayName' });
 
   return res.json(userMessages.map((message) => message.toJSON()));
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req: CustomRequest<MessageReq>, res) => {
   const body = req.body;
   const sender = await User.findOne({ displayName: body.sender });
   const recipient = await User.findOne({ displayName: body.recipient });
@@ -41,4 +44,4 @@ router.post('/', async (req, res) => {
   return res.status(201).json(savedMessage.toJSON());
 });
 
-module.exports = router;
+export default router;
