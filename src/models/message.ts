@@ -22,7 +22,6 @@ const messageSchema = new Schema(
   { _id: false }
 );
 
-AutoIncrement(messageSchema);
 messageSchema.plugin(AutoIncrement, { id: 'messages' });
 
 messageSchema.set('toJSON', {

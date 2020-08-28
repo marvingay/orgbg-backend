@@ -17,7 +17,6 @@ const notificationSchema = new Schema(
   { _id: false }
 );
 
-AutoIncrement(notificationSchema);
 notificationSchema.plugin(AutoIncrement, { id: 'notifications' });
 
 notificationSchema.set('toJSON', {
