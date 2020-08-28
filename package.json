@@ -2,12 +2,12 @@
   "name": "orgbg-backend",
   "version": "0.1.0",
   "description": "Online Reality Game Battleground Server",
-  "main": "index.ts",
+  "main": "build/index.s",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "node ./build/index.js",
     "dev": "ts-node-dev src/index.ts",
-    "tsc": "tsc",
-    "lint": "eslint --ext .ts ."
+    "build-ts": "tsc",
+    "postinstall": "npm run build-ts"
   },
   "author": "Marvin Gay",
   "license": "ISC",
